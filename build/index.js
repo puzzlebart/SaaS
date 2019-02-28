@@ -51,7 +51,7 @@ var bart = app.get('/characters/bart', function (req, res) {
   });
 }); // </ENDPOINTS>
 
-app.listen('3000', function () {
+app.listen('443', function () {
   return console.log(".");
 }); // starting
 //# sourceMappingURL=index.js.map
