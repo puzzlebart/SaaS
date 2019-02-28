@@ -3,8 +3,11 @@
   "version": "1.0.0",
   "description": "Simpsons as a Service",
   "scripts": {
-    "start": "babel-node index.js",
-    "dev": "nodemon --exec babel-node index.js"
+    // "dev": "npm run build && nodemon --exec babel-node ./build/index.js",
+    "clean": "rm -rf build && mkdir build",
+    "build-babel": "babel -d ./build ./src -s",
+    "build": "npm run clean && npm run build-babel",
+    "start": "npm run build && node ./build/index.js"
   },
   "keywords": [
     "ACDC2018",
