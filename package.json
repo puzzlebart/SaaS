@@ -1,0 +1,26 @@
+{
+  "name": "saas",
+  "version": "1.0.0",
+  "description": "Simpsons as a Service",
+  "scripts": {
+    "start": "nodemon --exec babel-node index.js"
+  },
+  "keywords": [
+    "ACDC2018",
+    "Simpsons",
+    "API"
+  ],
+  "author": "damsleth",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.4"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.2.3",
+    "@babel/core": "^7.2.2",
+    "@babel/node": "^7.2.2",
+    "@babel/preset-env": "^7.3.1",
+    "morgan": "^1.9.1",
+    "nodemon": "^1.18.10"
+  }
+}
