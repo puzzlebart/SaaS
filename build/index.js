@@ -53,5 +53,5 @@ var bart = app.get('/characters/bart', function (req, res) {
 
 app.listen('742', function () {
   return console.log(".");
-}); // starting server
+}); // starting
 //# sourceMappingURL=index.js.map

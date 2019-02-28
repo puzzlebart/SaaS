@@ -10,7 +10,13 @@ npm install
 
 ## Run
 
-npm start
+### development (with Nodemon hot-reloading)
+
+npm run dev
+
+### production
+
+npm 
 
 ## Usage
 

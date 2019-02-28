@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "description": "Simpsons as a Service",
   "scripts": {
-    // "dev": "npm run build && nodemon --exec babel-node ./build/index.js",
     "clean": "rm -rf build && mkdir build",
     "build-babel": "babel -d ./build ./src -s",
     "build": "npm run clean && npm run build-babel",
+    "dev": "npm run build && nodemon --exec babel-node ./build/index.js",
     "start": "npm run build && node ./build/index.js"
   },
   "keywords": [
