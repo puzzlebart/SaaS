@@ -45,13 +45,13 @@ var bart = app.get('/characters/bart', function (req, res) {
   res.json({
     message: {
       Name: "Bart Simpson",
-      Bio: "Bartholomew JoJo 'Bart' Simpson (born Feb 23/April 1, 1980)[4] is a main character and the tritagonist of The Simpsons."
+      Bio: "Bartholomew JoJo 'Bart' Simpson (born Feb 23/April 1, 1980) is a main character and the tritagonist of The Simpsons."
     },
     Picture: "https://vignette.wikia.nocookie.net/simpsons/images/6/65/Bart_Simpson.png/revision/latest?cb=20180319061933"
   });
 }); // </ENDPOINTS>
 
-app.listen('443', function () {
+app.listen('3030', function () {
   return console.log(".");
 }); // starting
 //# sourceMappingURL=index.js.map
