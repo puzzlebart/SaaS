@@ -52,6 +52,6 @@ var bart = app.get('/characters/bart', function (req, res) {
 }); // </ENDPOINTS>
 
 app.listen('3030', function () {
-  return console.log(".");
+  console.log(".")
 }); // starting
 //# sourceMappingURL=index.js.map
