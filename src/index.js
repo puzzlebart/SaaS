@@ -9,7 +9,7 @@ app.use(morgan('tiny')) // morgan
 
 // MICKEY MOUSE ENTERPRISE-GRADE SECURITY AS A SERVICE
 const superSecretApiKeys = process.env.APIKEYS.split(",")
-const doEnterpriseLevelSecurityCheck = false;
+const doEnterpriseLevelSecurityCheck = true;
 
 app.get('/', (req, res) => { res.send(`<h1>SaaS - Simpsons as a Service</h1>`) }) // default route
 
@@ -41,7 +41,7 @@ function EnterpriseLevelSecurityCheck(req, res) {
     return new Promise((resolve, reject) => {
         if (!doEnterpriseLevelSecurityCheck) { resolve(true); return; }
         if (!req.headers.apikey) {
-            res.send(`NO API KEY SPECIFIED. ASK PUZZLEBART FOR ONE!!!!`)
+            res.send(`NO API KEY SPECIFIED. ASK PUZZLEBART FOR ONE! We're all about sharing :D`)
             resolve(false)
         } else {
             if (superSecretApiKeys.includes(req.headers.apikey)) { resolve(true) } else {
