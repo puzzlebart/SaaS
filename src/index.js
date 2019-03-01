@@ -2,7 +2,7 @@
 import SaaSData from './saasdata.json';
 import express from 'express'; // framework
 import morgan from 'morgan'; // request logger
-if (process.platform === "darwin") { require("dotenv").config() }
+if (process.platform === "darwin") { require("dotenv").config() } // enterprise-grade MacOS-detection
 const app = express() // express app
 app.use(morgan('tiny')) // morgan
 
@@ -33,7 +33,7 @@ let quotes = app.get('/quotes', (req, res) => {
     let charsWithQuotes = SaaSData.filter(char => char.Quotes.length >= 1)
     const getRandomChar = () => charsWithQuotes[randomize(0, charsWithQuotes.length - 1)]
     // THIS RETURNS NULL SOMETIMES WAAAAAAAAAAI
-    const getRandomQuote = (char) => char.Quotes.length === 1 ? char.Quotes[0] : char.Quotes[randomize(0, char.Quotes.length-1)];
+    const getRandomQuote = (char) => char.Quotes.length === 1 ? char.Quotes[0] : char.Quotes[randomize(0, char.Quotes.length - 1)];
     const getRandomQuoteObject = () => {
         let rChar = getRandomChar()
         let rQuote = getRandomQuote(rChar)
@@ -78,11 +78,11 @@ function EnterpriseLevelSecurityCheck(req, res) {
     return new Promise((resolve, reject) => {
         if (!doEnterpriseLevelSecurityCheck) { resolve(true); return; }
         if (!req.headers.apikey) {
-            res.send(`NO API KEY SPECIFIED. ASK PUZZLEBART FOR ONE! We're all about sharing :D`)
+            res.json({ error: `NO API KEY SPECIFIED. ASK PUZZLEBART FOR ONE! We're all about sharing :D` })
             resolve(false)
         } else {
             if (superSecretApiKeys.includes(req.headers.apikey)) { resolve(true) } else {
-                res.send(`WRONG API KEY SPECIFIED. ARE YOU HACKING???!`)
+                res.json({ error: `WRONG API KEY SPECIFIED. ARE YOU HACKING???!` })
                 resolve(false)
             }
         }

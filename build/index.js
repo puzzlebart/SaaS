@@ -19,7 +19,8 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 // request logger
 if (process.platform === "darwin") {
   require("dotenv").config();
-}
+} // enterprise-grade MacOS-detection
+
 
 var app = (0, _express.default)(); // express app
 
@@ -145,13 +146,17 @@ function EnterpriseLevelSecurityCheck(req, res) {
     }
 
     if (!req.headers.apikey) {
-      res.send("NO API KEY SPECIFIED. ASK PUZZLEBART FOR ONE! We're all about sharing :D");
+      res.json({
+        error: "NO API KEY SPECIFIED. ASK PUZZLEBART FOR ONE! We're all about sharing :D"
+      });
       resolve(false);
     } else {
       if (superSecretApiKeys.includes(req.headers.apikey)) {
         resolve(true);
       } else {
-        res.send("WRONG API KEY SPECIFIED. ARE YOU HACKING???!");
+        res.json({
+          error: "WRONG API KEY SPECIFIED. ARE YOU HACKING???!"
+        });
         resolve(false);
       }
     }
