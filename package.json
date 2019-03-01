@@ -6,7 +6,7 @@
     "clean": "rm -rf build && mkdir build",
     "build-babel": "babel -d ./build ./src -s",
     "build": "npm run clean && npm run build-babel",
-    "dev": "npm run build && nodemon --exec babel-node ./build/index.js",
+    "dev": "npm run build-babel && nodemon --exec node ./build/index.js",
     "start": "node ./build/index.js"
   },
   "keywords": [
@@ -17,6 +17,8 @@
   "author": "damsleth",
   "license": "ISC",
   "dependencies": {
+    "@azure/cosmos": "^2.1.2",
+    "async": "^2.6.2",
     "express": "^4.16.4"
   },
   "devDependencies": {

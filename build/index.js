@@ -4,6 +4,8 @@ var _express = _interopRequireDefault(require("express"));
 
 var _morgan = _interopRequireDefault(require("morgan"));
 
+var _saasdata = _interopRequireDefault(require("./saasdata.json"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 // framework
@@ -16,6 +18,7 @@ app.use((0, _morgan.default)('tiny')); // morgan
 app.get('/', function (req, res) {
   res.send("<h1>SaaS - Simpsons as a Service</h1>");
 }); // default route
+// DaaS
 
 var doh = app.get('/doh', function (req, res) {
   res.json({
@@ -23,35 +26,36 @@ var doh = app.get('/doh', function (req, res) {
   });
 }); // D'oh!
 
-var caramba = app.get('/caramba', function (req, res) {
-  res.json({
-    message: "¡Ay, caramba!"
-  });
-}); //caramba
+var character = app.get(["/characters", "/api/characters", "/chars"], function (req, res) {
+  var search = req.query;
+  var queryProp = Object.keys(search)[0];
+  console.log("queryprop: ".concat(queryProp));
 
-var mmm = app.get('/mmm', function (req, res) {
-  res.json({
-    message: "Mmm~mmmmm"
-  });
-}); //mmm
+  if (!queryProp) {
+    res.send("<h1>SaaS character-endpoint. Retrieve a character using ?name=[charactername] </h1>");
+  } else {
+    // Name search
+    if (queryProp.toString().toLowerCase() === "name") {
+      var nameQuery = decodeURIComponent(search[queryProp].toLowerCase());
 
-var hi = app.get('/hi', function (req, res) {
-  res.json({
-    message: "Hi-Diddily-Ho!"
-  });
-}); //Hi but in Flanders
+      var _character = _saasdata.default.filter(function (char) {
+        if (!char[queryProp]) {
+          return false;
+        }
 
-var bart = app.get('/characters/bart', function (req, res) {
-  res.json({
-    message: {
-      Name: "Bart Simpson",
-      Bio: "Bartholomew JoJo 'Bart' Simpson (born Feb 23/April 1, 1980) is a main character and the tritagonist of The Simpsons."
-    },
-    Picture: "https://vignette.wikia.nocookie.net/simpsons/images/6/65/Bart_Simpson.png/revision/latest?cb=20180319061933"
-  });
+        return char[queryProp].toLowerCase() === nameQuery;
+      });
+
+      if (_character.length) {
+        res.send(JSON.stringify(_character[0]));
+      } else {
+        res.send("No character with the name ".concat(nameQuery, " in the SaaS-database"));
+      }
+    }
+  }
 }); // </ENDPOINTS>
 
-app.listen(process.env.PORT || '3030', function () {
-  console.log(".")
+app.listen(process.env.PORT || '3000', function () {
+  return console.log("running on port ".concat(process.env.PORT || '3000'));
 }); // starting
 //# sourceMappingURL=index.js.map
