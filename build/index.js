@@ -24,7 +24,13 @@ if (process.platform === "darwin") {
 var app = (0, _express.default)(); // express app
 
 app.use((0, _morgan.default)('tiny')); // morgan
-// MICKEY MOUSE ENTERPRISE-GRADE SECURITY AS A SERVICE
+//CORS
+
+app.use(function (req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+}); // MICKEY MOUSE ENTERPRISE-GRADE SECURITY AS A SERVICE
 
 var superSecretApiKeys = process.env.APIKEYS.split(",");
 var doEnterpriseLevelSecurityCheck = true;
@@ -50,7 +56,7 @@ var character = app.get(["/characters", "/api/characters", "/chars"], function (
     console.log("queryprop: ".concat(Object.keys(search)[0]));
 
     if (!Object.keys(search)[0]) {
-      res.send("<h1>SaaS character-endpoint. Retrieve a character using ?name=[charactername] </h1>");
+      res.send("<h1>SaaS character-endpoint. Retrieve a character using ?name=[charactername] or ?id=[characterId] </h1>");
     } else {
       var queryProp = capitalize(Object.keys(search)[0]);
       var queryText = decodeURIComponent(search[queryProp]);

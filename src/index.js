@@ -6,6 +6,12 @@ if (process.platform === "darwin") { require("dotenv").config() }
 const app = express() // express app
 app.use(morgan('tiny')) // morgan
 
+//CORS
+app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+  });
 
 // MICKEY MOUSE ENTERPRISE-GRADE SECURITY AS A SERVICE
 const superSecretApiKeys = process.env.APIKEYS.split(",")
@@ -25,7 +31,7 @@ let character = app.get(["/characters", "/api/characters", "/chars"], (req, res)
     EnterpriseLevelSecurityCheck(req, res).then(passed => {
         if (!passed) return;
         console.log(`queryprop: ${Object.keys(search)[0]}`)
-        if (!Object.keys(search)[0]) { res.send(`<h1>SaaS character-endpoint. Retrieve a character using ?name=[charactername] </h1>`) } else {
+        if (!Object.keys(search)[0]) { res.send(`<h1>SaaS character-endpoint. Retrieve a character using ?name=[charactername] or ?id=[characterId] </h1>`) } else {
             let queryProp = capitalize(Object.keys(search)[0])
             let queryText = decodeURIComponent(search[queryProp])
             let charResults = SaaSData.filter(char => { if (!char[queryProp]) { return false; } return char[queryProp] == queryText })
