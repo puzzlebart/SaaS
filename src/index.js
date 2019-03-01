@@ -7,38 +7,51 @@ const app = express() // express app
 app.use(morgan('tiny')) // morgan
 
 //CORS
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     // Remember to have apikey here, else our enterprise-grade authorization-system will fail
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, apikey");
     next();
-  });
+});
 
 // MICKEY MOUSE ENTERPRISE-GRADE SECURITY AS A SERVICE
 const superSecretApiKeys = process.env.APIKEYS.split(",")
 const doEnterpriseLevelSecurityCheck = true;
+const getRandom = (min, max) => Math.round((Math.random() * (max - min) + min))
 
-
+// TIHIaaS
+let tihi = app.get('/tihi', (req, res) => {
+    res.redirect("https://www.youtube.com/watch?v=-Lez_WdX7Oc") // Thanks, I hate it
+})
 
 // DaaS
 let doh = app.get('/doh', (req, res) => { res.json({ message: "D'oh!" }) }) // D'oh!
 
-let quotes = app.get('/quotes', (req, res) => { res.json({ message: "D'oh!" }) }) // D'oh! 
+let quotes = app.get('/quotes', (req, res) => {
+    if (req.query !== {}) {
+        console.log("getting random quote")
+        // sensible - random by default
+        let charsWithQuotes = SaaSData.filter(char => char.Quotes.length)
+        let rChar = charsWithQuotes[getRandom(0, charsWithQuotes.length)]
+        let rQuote = rChar.Quotes[getRandom(0, rChar.Quotes.length)]
+        res.json({ Quote: rQuote, Name: rChar.Name, Picture: rChar.Picture })
+    } else {
+        console.log(req.query)
+    }
+})
 
 // character route
 let character = app.get(["/characters", "/api/characters", "/chars"], (req, res) => {
-    let headers = req.headers;
-    let apikey = req.headers.apikey;
-    let search = req.query;
-    console.log(`APIKEY: ${JSON.stringify(apikey) || "none"}`)
+    console.log(`APIKEY: ${JSON.stringify(req.headers.apikey) || "none"}`)
     EnterpriseLevelSecurityCheck(req, res).then(passed => {
         if (!passed) return;
+        let search = req.query;
         console.log(`queryprop: ${Object.keys(search)[0]}`)
         if (!Object.keys(search)[0]) { res.send(`<h1>SaaS character-endpoint. Retrieve a character using ?name=[charactername] or ?id=[characterId] </h1>`) } else {
             let queryProp = capitalize(Object.keys(search)[0])
             let queryText = decodeURIComponent(search[queryProp])
             let charResults = SaaSData.filter(char => { if (!char[queryProp]) { return false; } return char[queryProp] == queryText })
-            if (charResults.length) { res.send(JSON.stringify([...charResults])) }
+            if (charResults.length) { res.json([...charResults]) }
             else {
                 res.send(`No character with ${queryProp} ${queryText} in the SaaS-database`)
             }
@@ -66,9 +79,9 @@ const capitalize = (s) => { if (typeof s !== 'string') return ''; return s.charA
 
 
 // FRONT PAGE
-app.get('/', (req, res) => { res.send(`<!DOCTYPE html>
+app.get('/', (req, res) => {
+    res.send(`<!DOCTYPE html>
 <html>
-
 <head>
     <title>Simpsons as a Service</title>
     <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css"
@@ -137,7 +150,8 @@ app.get('/', (req, res) => { res.send(`<!DOCTYPE html>
     </div>
 </body>
 </html>
-`) }) // default route
+`)
+}) // default route
 
 
-app.listen(process.env.PORT || '3000', () => console.log(`running on port ${process.env.PORT || '3000'}`)) // starting
+app.listen(process.env.PORT || '3000', () => console.log(`running on port ${process.env.PORT || '3000'}`))
