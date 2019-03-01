@@ -135,6 +135,10 @@ app.get('/', (req, res) => {
                     <td>/picture</td>
                     <td>Returns the main character photo</td>
                 </tr>
+                <tr>
+                    <td>/tihi</td>
+                    <td>TIHIaas - Thanks, I hate it as a Service</td>
+                </tr>
             </table>
             <h3 id="operations">Example usage</h3>
             <p><b>cURL</b></p>
