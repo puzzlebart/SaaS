@@ -173,6 +173,7 @@ app.get('(/*)?', (req, res) => { res.send(`
             <p><em>Simpsons as a Service v1.0.0</em></p>
         </div>
     </div>
+    <center><a href="/">saas.puzzlebart.no</a>
     </body></html>`) }) // D'oh!
 
 app.listen(process.env.PORT || '3000', () => console.log(`running on port ${process.env.PORT || '3000'}`))
