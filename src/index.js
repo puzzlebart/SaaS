@@ -17,12 +17,14 @@ app.use(function (req, res, next) {
 // MICKEY MOUSE ENTERPRISE-GRADE SECURITY AS A SERVICE
 const superSecretApiKeys = process.env.APIKEYS.split(",")
 const doEnterpriseLevelSecurityCheck = true;
-const getRandom = (min, max) => Math.round((Math.random() * (max - min) + min))
+// ENTERPRISE GRADE RANDOMIZATION ENGINE
+const randomize = (min, max) => Math.round((Math.random() * (max - min) + min))
 
-// TIHIaaS
-let tihi = app.get('/tihi', (req, res) => {
-    res.redirect("https://www.youtube.com/watch?v=-Lez_WdX7Oc") // Thanks, I hate it
-})
+// TIHIaaS -  Thanks, I hate it as a Service
+let tihi = app.get('/tihi', (req, res) => { res.redirect("https://www.youtube.com/watch?v=-Lez_WdX7Oc") })
+
+// version
+let version = app.get("/version", (req, res) => { res.json({ version: "1.0.0" }) })
 
 // DaaS
 let doh = app.get('/doh', (req, res) => { res.json({ message: "D'oh!" }) }) // D'oh!
@@ -32,9 +34,9 @@ let quotes = app.get('/quotes', (req, res) => {
         console.log("getting random quote")
         // sensible - random by default
         let charsWithQuotes = SaaSData.filter(char => char.Quotes.length)
-        let rChar = charsWithQuotes[getRandom(0, charsWithQuotes.length)]
-        let rQuote = rChar.Quotes[getRandom(0, rChar.Quotes.length)]
-        res.json({ Quote: rQuote, Name: rChar.Name, Picture: rChar.Picture })
+        let rChar = charsWithQuotes[randomize(0, charsWithQuotes.length)]
+        let rQuote = ()=> rChar.Quotes.length===1 ? rChar.Quotes[0] : rChar.Quotes[randomize(0, rChar.Quotes.length)] -1;
+        res.json({ Quote: rQuote(), Name: rChar.Name, Picture: rChar.Picture })
     } else {
         console.log(req.query)
     }
@@ -157,7 +159,8 @@ app.get('/', (req, res) => {
 `)
 }); // default route
 
-app.get('(/*)?', (req, res) => { res.send(`
+app.get('(/*)?', (req, res) => {
+    res.send(`
 <html>
 <head>
     <title>Simpsons as a Service</title>
@@ -174,6 +177,7 @@ app.get('(/*)?', (req, res) => { res.send(`
         </div>
     </div>
     <center><a href="/">saas.puzzlebart.no</a>
-    </body></html>`) }) // D'oh!
+    </body></html>`)
+}) // D'oh!
 
 app.listen(process.env.PORT || '3000', () => console.log(`running on port ${process.env.PORT || '3000'}`))

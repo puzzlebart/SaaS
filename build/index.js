@@ -34,15 +34,21 @@ app.use(function (req, res, next) {
 }); // MICKEY MOUSE ENTERPRISE-GRADE SECURITY AS A SERVICE
 
 var superSecretApiKeys = process.env.APIKEYS.split(",");
-var doEnterpriseLevelSecurityCheck = true;
+var doEnterpriseLevelSecurityCheck = true; // ENTERPRISE GRADE RANDOMIZATION ENGINE
 
-var getRandom = function getRandom(min, max) {
+var randomize = function randomize(min, max) {
   return Math.round(Math.random() * (max - min) + min);
-}; // TIHIaaS
+}; // TIHIaaS -  Thanks, I hate it as a Service
 
 
 var tihi = app.get('/tihi', function (req, res) {
-  res.redirect("https://www.youtube.com/watch?v=-Lez_WdX7Oc"); // Thanks, I hate it
+  res.redirect("https://www.youtube.com/watch?v=-Lez_WdX7Oc");
+}); // version
+
+var version = app.get("/version", function (req, res) {
+  res.json({
+    version: "1.0.0"
+  });
 }); // DaaS
 
 var doh = app.get('/doh', function (req, res) {
@@ -59,10 +65,14 @@ var quotes = app.get('/quotes', function (req, res) {
       return char.Quotes.length;
     });
 
-    var rChar = charsWithQuotes[getRandom(0, charsWithQuotes.length)];
-    var rQuote = rChar.Quotes[getRandom(0, rChar.Quotes.length)];
+    var rChar = charsWithQuotes[randomize(0, charsWithQuotes.length)];
+
+    var rQuote = function rQuote() {
+      return rChar.Quotes.length === 1 ? rChar.Quotes[0] : rChar.Quotes[randomize(0, rChar.Quotes.length)] - 1;
+    };
+
     res.json({
-      Quote: rQuote,
+      Quote: rQuote(),
       Name: rChar.Name,
       Picture: rChar.Picture
     });
@@ -134,7 +144,7 @@ app.get('/', function (req, res) {
 }); // default route
 
 app.get('(/*)?', function (req, res) {
-  res.send("\n<html>\n<head>\n    <title>Simpsons as a Service</title>\n    <link href=\"//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css\" rel=\"stylesheet\">\n    <meta name=\"og:title\" content=\"Simpsons As A Service\">\n    <script src=\"//code.jquery.com/jquery-3.1.1.min.js\" type=\"text/javascript\"></script>\n</head>\n<body>\n    <div class=\"container\">\n        <div class=\"hero-unit\">\n            <h1>742 - D'oh!</h1>\n            <h2>This is not the endpoint you are looking for</h2>\n            <p><em>Simpsons as a Service v1.0.0</em></p>\n        </div>\n    </div>\n    </body></html>");
+  res.send("\n<html>\n<head>\n    <title>Simpsons as a Service</title>\n    <link href=\"//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css\" rel=\"stylesheet\">\n    <meta name=\"og:title\" content=\"Simpsons As A Service\">\n    <script src=\"//code.jquery.com/jquery-3.1.1.min.js\" type=\"text/javascript\"></script>\n</head>\n<body>\n    <div class=\"container\">\n        <div class=\"hero-unit\">\n            <h1>742 - D'oh!</h1>\n            <h2>This is not the endpoint you are looking for</h2>\n            <p><em>Simpsons as a Service v1.0.0</em></p>\n        </div>\n    </div>\n    <center><a href=\"/\">saas.puzzlebart.no</a>\n    </body></html>");
 }); // D'oh!
 
 app.listen(process.env.PORT || '3000', function () {
