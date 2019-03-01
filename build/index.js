@@ -27,7 +27,7 @@ app.use((0, _morgan.default)('tiny')); // morgan
 // MICKEY MOUSE ENTERPRISE-GRADE SECURITY AS A SERVICE
 
 var superSecretApiKeys = process.env.APIKEYS.split(",");
-var doEnterpriseLevelSecurityCheck = false;
+var doEnterpriseLevelSecurityCheck = true;
 app.get('/', function (req, res) {
   res.send("<h1>SaaS - Simpsons as a Service</h1>");
 }); // default route
@@ -80,7 +80,7 @@ function EnterpriseLevelSecurityCheck(req, res) {
     }
 
     if (!req.headers.apikey) {
-      res.send("NO API KEY SPECIFIED. ASK PUZZLEBART FOR ONE!!!!");
+      res.send("NO API KEY SPECIFIED. ASK PUZZLEBART FOR ONE! We're all about sharing :D");
       resolve(false);
     } else {
       if (superSecretApiKeys.includes(req.headers.apikey)) {
