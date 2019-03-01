@@ -93,7 +93,7 @@ var character = app.get(["/characters", "/api/characters", "/chars"], function (
       });
 
       if (charResults.length) {
-        res.send(JSON.stringify(_toConsumableArray(charResults)));
+        res.json(_toConsumableArray(charResults));
       } else {
         res.send("No character with ".concat(queryProp, " ").concat(queryText, " in the SaaS-database"));
       }
