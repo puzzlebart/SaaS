@@ -9,6 +9,7 @@ app.use(morgan('tiny')) // morgan
 //CORS
 app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
+    // Remember to have apikey here, else our enterprise-grade authorization-system will fail
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, apikey");
     next();
   });
@@ -21,6 +22,8 @@ const doEnterpriseLevelSecurityCheck = true;
 
 // DaaS
 let doh = app.get('/doh', (req, res) => { res.json({ message: "D'oh!" }) }) // D'oh!
+
+let quotes = app.get('/quotes', (req, res) => { res.json({ message: "D'oh!" }) }) // D'oh! 
 
 // character route
 let character = app.get(["/characters", "/api/characters", "/chars"], (req, res) => {
@@ -62,6 +65,7 @@ function EnterpriseLevelSecurityCheck(req, res) {
 const capitalize = (s) => { if (typeof s !== 'string') return ''; return s.charAt(0).toUpperCase() + s.slice(1) }
 
 
+// FRONT PAGE
 app.get('/', (req, res) => { res.send(`<!DOCTYPE html>
 <html>
 
