@@ -58,24 +58,50 @@ var doh = app.get('/doh', function (req, res) {
 }); // D'oh!
 
 var quotes = app.get('/quotes', function (req, res) {
-  if (req.query !== {}) {
-    console.log("getting random quote"); // sensible - random by default
+  var charsWithQuotes = _saasdata.default.filter(function (char) {
+    return char.Quotes.length >= 1;
+  });
 
-    var charsWithQuotes = _saasdata.default.filter(function (char) {
-      return char.Quotes.length;
-    });
+  var getRandomChar = function getRandomChar() {
+    return charsWithQuotes[randomize(0, charsWithQuotes.length - 1)];
+  }; // THIS RETURNS NULL SOMETIMES WAAAAAAAAAAI
 
-    var rChar = charsWithQuotes[randomize(0, charsWithQuotes.length)];
 
-    var rQuote = function rQuote() {
-      return rChar.Quotes.length === 1 ? rChar.Quotes[0] : rChar.Quotes[randomize(0, rChar.Quotes.length)] - 1;
-    };
+  var getRandomQuote = function getRandomQuote(char) {
+    return char.Quotes.length === 1 ? char.Quotes[0] : char.Quotes[randomize(0, char.Quotes.length - 1)];
+  };
 
-    res.json({
-      Quote: rQuote(),
+  var getRandomQuoteObject = function getRandomQuoteObject() {
+    var rChar = getRandomChar();
+    var rQuote = getRandomQuote(rChar);
+    return {
+      Quote: rQuote,
       Name: rChar.Name,
       Picture: rChar.Picture
-    });
+    };
+  };
+
+  if (!req.query.amount) {
+    console.log("getting random quote"); // sensible - random by default
+    // God this is so horrible
+
+    res.json(getRandomQuoteObject());
+  }
+
+  if (req.query.amount) {
+    if (isNaN(parseInt(req.query.amount))) {
+      res.json({
+        error: "YOU HAVE TO SPECIFY A NUMBER AS AMOUNT, DOOFUS"
+      });
+    }
+
+    var chars = [];
+
+    for (var i = 0; i < req.query.amount; i++) {
+      chars.push(getRandomQuoteObject());
+    }
+
+    res.json(chars);
   } else {
     console.log(req.query);
   }

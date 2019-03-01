@@ -30,14 +30,27 @@ let version = app.get("/version", (req, res) => { res.json({ version: "1.0.0" })
 let doh = app.get('/doh', (req, res) => { res.json({ message: "D'oh!" }) }) // D'oh!
 
 let quotes = app.get('/quotes', (req, res) => {
-    if (req.query !== {}) {
+    let charsWithQuotes = SaaSData.filter(char => char.Quotes.length >= 1)
+    const getRandomChar = () => charsWithQuotes[randomize(0, charsWithQuotes.length - 1)]
+    // THIS RETURNS NULL SOMETIMES WAAAAAAAAAAI
+    const getRandomQuote = (char) => char.Quotes.length === 1 ? char.Quotes[0] : char.Quotes[randomize(0, char.Quotes.length-1)];
+    const getRandomQuoteObject = () => {
+        let rChar = getRandomChar()
+        let rQuote = getRandomQuote(rChar)
+        return { Quote: rQuote, Name: rChar.Name, Picture: rChar.Picture }
+    }
+    if (!req.query.amount) {
         console.log("getting random quote")
         // sensible - random by default
-        let charsWithQuotes = SaaSData.filter(char => char.Quotes.length)
-        let rChar = charsWithQuotes[randomize(0, charsWithQuotes.length)]
-        let rQuote = ()=> rChar.Quotes.length===1 ? rChar.Quotes[0] : rChar.Quotes[randomize(0, rChar.Quotes.length)] -1;
-        res.json({ Quote: rQuote(), Name: rChar.Name, Picture: rChar.Picture })
-    } else {
+        // God this is so horrible
+        res.json(getRandomQuoteObject())
+    } if (req.query.amount) {
+        if (isNaN(parseInt(req.query.amount))) { res.json({ error: "YOU HAVE TO SPECIFY A NUMBER AS AMOUNT, DOOFUS" }) }
+        let chars = []
+        for (let i = 0; i < req.query.amount; i++) { chars.push(getRandomQuoteObject()) }
+        res.json(chars)
+    }
+    else {
         console.log(req.query)
     }
 })
