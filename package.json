@@ -11,9 +11,10 @@
     "watch": "watch 'npm run build-babel' ./src && node ./build/index.js"
   },
   "keywords": [
-    "ACDC2018",
+    "ACDC2019",
     "Simpsons",
-    "API"
+    "API",
+    "SaaS"
   ],
   "author": "damsleth",
   "license": "ISC",

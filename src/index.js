@@ -155,7 +155,24 @@ app.get('/', (req, res) => {
 </body>
 </html>
 `)
-}) // default route
+}); // default route
 
+app.get('(/*)?', (req, res) => { res.send(`
+<html>
+<head>
+    <title>Simpsons as a Service</title>
+    <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
+    <meta name="og:title" content="Simpsons As A Service">
+    <script src="//code.jquery.com/jquery-3.1.1.min.js" type="text/javascript"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="hero-unit">
+            <h1>742 - D'oh!</h1>
+            <h2>This is not the endpoint you are looking for</h2>
+            <p><em>Simpsons as a Service v1.0.0</em></p>
+        </div>
+    </div>
+    </body></html>`) }) // D'oh!
 
 app.listen(process.env.PORT || '3000', () => console.log(`running on port ${process.env.PORT || '3000'}`))
