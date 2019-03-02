@@ -191,6 +191,7 @@ app.get('/', (req, res) => {
                     <td>TIHIaas - Thanks, I hate it as a Service</td>
                 </tr>
             </table>
+            <p>The <code>/characters/random</code> and <code>/quotes</code> endpoints support the <code>amount</code> switch. E.g. /characters/random?amount=10
             <h3 id="operations">Example usage</h3>
             <p><b>cURL</b></p>
             <code>curl -L "http://saas.puzzlebart.no/characters?Name=Homer%20Simpson" -H apikey:"YOUR_API_KEY"</code>
