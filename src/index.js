@@ -2,6 +2,7 @@
 import SaaSData from './saasdata.json'; // scalable enterprise-grade JSON document storage
 import express from 'express'; // framework, yo
 import morgan from 'morgan'; // request logger
+import axios from "axios";
 if (process.platform === "darwin") { require("dotenv").config() } // enterprise-grade MacOS-detection
 const app = express() // express app instance
 app.use(morgan('tiny')) // morgan
@@ -107,6 +108,29 @@ let character = app.get(["/characters", "/api/characters", "/chars", "/character
     });
 })
 
+function ReactorControllerHumidityCheck(req, res) {
+    return new Promise((resolve, reject) => {
+        if (req.headers.ignore == "true" || req.query.ignore == "true") { resolve(true) } else {
+            axios.get('https://reactorapi.azurewebsites.net/api/CanServerLive?code=R4sueZTK3wX7gY8ol2Urtrjj6jgzZMzVv5gtdOtZKtabZH7urZzhdg==')
+                .then(response => {
+                    console.log(`got reactor core data:`)
+                    console.log(JSON.stringify(response.data))
+                    let watts = Math.round(response.data.watt)
+                    if (watts < 28880 && watts !== 0) {
+                        console.log(`---------- WARNING ------------- REACTOR POWER LESS THAN 30GW, currently at ${watts}GW`)
+                        resolve([true, watts]) // CHANGE TO FALSE
+                    } else if (watts > 28880) {
+                        console.log(`--------ALL GOOD, REACTOR POWER AT ${watts}GW`)
+                        resolve([true, watts])
+                    } else {
+                        console.log(`--------REACTOR POWER DETECTOR CURRENTLY UNAVAILABLE--------`)
+                        resolve([true, watts]) // fuck this guy
+                    }
+                })
+        }
+    })
+}
+
 
 // ENTERPRISE LEVEL SECURITY ENGINE AUTOMATRON - DO NOT TOUCH IT'S PERFECT THANKS
 function EnterpriseLevelSecurityCheck(req, res) {
@@ -132,7 +156,8 @@ const capitalize = (s) => { if (typeof s !== 'string') return ''; return s.charA
 
 // FRONT PAGE
 app.get('/', (req, res) => {
-    res.send(`<!DOCTYPE html>
+    ReactorControllerHumidityCheck(req, res).then(([passed, watts]) => {
+        res.send(`<!DOCTYPE html>
 <html>
 <head>
     <title>Simpsons as a Service</title>
@@ -150,7 +175,7 @@ app.get('/', (req, res) => {
         <div class="hero-unit">
             <h1>SaaS</h1>
             <h2>Simpsons As A Service</h2>
-            <p><em>v1.0.0</em></p>
+            <p><em>v1.0.0 - REACTORY POWER <b>${watts !== 0 ? watts<28880 ? "TOO LOW, SHOULD BE >28GW, CURRENTLY AT "+watts+"GW. API REQUESTS MIGHT BE SLOW" : "PRETTY GOOD, CURRENTLY AT "+watts+"GW" : "UNAVAILABLE, API REQUESTS MIGHT BE SLOW"}</b></em></p>
         </div>
     </div>
     <div class="container">
@@ -215,7 +240,8 @@ app.get('/', (req, res) => {
 </body>
 </html>
 `)
-}); 
+    })
+});
 
 // error route
 app.get('(/*)?', (req, res) => {

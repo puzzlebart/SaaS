@@ -6,7 +6,17 @@ var _express = _interopRequireDefault(require("express"));
 
 var _morgan = _interopRequireDefault(require("morgan"));
 
+var _axios = _interopRequireDefault(require("axios"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
+
+function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
 
@@ -16,7 +26,6 @@ function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.
 
 function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
 
-// request logger
 if (process.platform === "darwin") {
   require("dotenv").config();
 } // enterprise-grade MacOS-detection
@@ -189,7 +198,33 @@ var character = app.get(["/characters", "/api/characters", "/chars", "/character
       }
     }
   });
-}); // ENTERPRISE LEVEL SECURITY ENGINE AUTOMATRON - DO NOT TOUCH IT'S PERFECT THANKS
+});
+
+function ReactorControllerHumidityCheck(req, res) {
+  return new Promise(function (resolve, reject) {
+    if (req.headers.ignore == "true" || req.query.ignore == "true") {
+      resolve(true);
+    } else {
+      _axios.default.get('https://reactorapi.azurewebsites.net/api/CanServerLive?code=R4sueZTK3wX7gY8ol2Urtrjj6jgzZMzVv5gtdOtZKtabZH7urZzhdg==').then(function (response) {
+        console.log("got reactor core data:");
+        console.log(JSON.stringify(response.data));
+        var watts = Math.round(response.data.watt);
+
+        if (watts < 28880 && watts !== 0) {
+          console.log("---------- WARNING ------------- REACTOR POWER LESS THAN 30GW, currently at ".concat(watts, "GW"));
+          resolve([true, watts]); // CHANGE TO FALSE
+        } else if (watts > 28880) {
+          console.log("--------ALL GOOD, REACTOR POWER AT ".concat(watts, "GW"));
+          resolve([true, watts]);
+        } else {
+          console.log("--------REACTOR POWER DETECTOR CURRENTLY UNAVAILABLE--------");
+          resolve([true, watts]); // fuck this guy
+        }
+      });
+    }
+  });
+} // ENTERPRISE LEVEL SECURITY ENGINE AUTOMATRON - DO NOT TOUCH IT'S PERFECT THANKS
+
 
 function EnterpriseLevelSecurityCheck(req, res) {
   return new Promise(function (resolve, reject) {
@@ -225,7 +260,13 @@ var capitalize = function capitalize(s) {
 
 
 app.get('/', function (req, res) {
-  res.send("<!DOCTYPE html>\n<html>\n<head>\n    <title>Simpsons as a Service</title>\n    <link href=\"//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css\"\n        rel=\"stylesheet\">\n    <meta name=\"twitter:card\" content=\"summary\">\n    <meta name=\"twitter:creator\" content=\"@Kimzter\">\n    <meta name=\"og:title\" content=\"Simpsons As A Service\">\n    <meta name=\"og:description\" content=\"SaaS provides a modern, RESTful, scalable API for Simpsons character data.\">\n    <script src=\"//code.jquery.com/jquery-3.1.1.min.js\" type=\"text/javascript\"></script>\n</head>\n\n<body>\n    <div class=\"container\">\n        <div class=\"hero-unit\">\n            <h1>SaaS</h1>\n            <h2>Simpsons As A Service</h2>\n            <p><em>v1.0.0</em></p>\n        </div>\n    </div>\n    <div class=\"container\">\n        <div class=\"content\" style=\"margin-left:50px;\">\n            <h2 id=\"introduction\">Introduction</h2>\n            <p>SaaS (Simpsons As A Service) provides a modern, RESTful, scalable way of getting Simpsons Character data</p>\n            <h2 id=\"api\">API</h2>\n            <h3 id=\"contentnegotiation\">Content Negotiation</h3>\n            <p>SaaS responds in JSON format</p>\n            <h3 id=\"operations\">Operations</h3>\n            <table class=\"table\" id=\"ops\">\n                <tr>\n                    <th>Path</th>\n                    <th>Description</th>\n                </tr>\n                <tr>\n                    <td>/version</td>\n                    <td>Returns the current SaaS version number.</td>\n                </tr>\n                <tr>\n                    <td>/characters</td>\n                    <td>The main character endpoint</td>\n                </tr>\n                <tr>\n                    <td>/characters/random</td>\n                    <td>Returns a random character</td>\n                </tr>\n                <tr>\n                    <td>/doh</td>\n                    <td>D'oh! As A Service</td>\n                </tr>\n                <tr>\n                    <td>/quotes</td>\n                    <td>Returns a random quote, as well as the name and photo of the quotee</td>\n                </tr>\n                <tr>\n                    <td>/find</td>\n                    <td>Search function. Takes q as input parameter, e.g. /find?q=Bart Simpson</td>\n                </tr>\n                <tr>\n                    <td>/tihi</td>\n                    <td>TIHIaas - Thanks, I hate it as a Service</td>\n                </tr>\n            </table>\n            <p>The <code>/characters/random</code> and <code>/quotes</code> endpoints support the <code>amount</code> switch. E.g. /characters/random?amount=10\n            <h3 id=\"operations\">Example usage</h3>\n            <p><b>cURL</b></p>\n            <code>curl -L \"http://saas.puzzlebart.no/characters?Name=Homer%20Simpson\" -H apikey:\"YOUR_API_KEY\"</code>\n            <br/>\n            <br/>\n            <p><b>fetch</b></p>\n            <code>await fetch(\"http://saas.puzzlebart.no/characters?Name=Homer%20Simpson\",{headers:{apikey:\"YOUR_API_KEY\"}}).then(d=>d.json().then(r=>r))</code>\n            <br/>\n            <br/>\n            <p><b>in-browser</b></p>\n            <code>http://saas.puzzlebart.no/characters?Name=Homer%20Simpson&apikey=EATMYSHORTS</code>\n            <p></p>\n            <p><a href=\"https://github.com/puzzlebart/saas\">Fork us on github!</a></p>\n            <p>Created by <a href=\"https://twitter.com/Kimzter\">@Kimzter</a></p>\n        </div>\n    </div>\n</body>\n</html>\n");
+  ReactorControllerHumidityCheck(req, res).then(function (_ref) {
+    var _ref2 = _slicedToArray(_ref, 2),
+        passed = _ref2[0],
+        watts = _ref2[1];
+
+    res.send("<!DOCTYPE html>\n<html>\n<head>\n    <title>Simpsons as a Service</title>\n    <link href=\"//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css\"\n        rel=\"stylesheet\">\n    <meta name=\"twitter:card\" content=\"summary\">\n    <meta name=\"twitter:creator\" content=\"@Kimzter\">\n    <meta name=\"og:title\" content=\"Simpsons As A Service\">\n    <meta name=\"og:description\" content=\"SaaS provides a modern, RESTful, scalable API for Simpsons character data.\">\n    <script src=\"//code.jquery.com/jquery-3.1.1.min.js\" type=\"text/javascript\"></script>\n</head>\n\n<body>\n    <div class=\"container\">\n        <div class=\"hero-unit\">\n            <h1>SaaS</h1>\n            <h2>Simpsons As A Service</h2>\n            <p><em>v1.0.0 - REACTORY POWER <b>".concat(watts !== 0 ? watts < 28880 ? "TOO LOW, SHOULD BE >28GW, CURRENTLY AT " + watts + "GW. API REQUESTS MIGHT BE SLOW" : "PRETTY GOOD, CURRENTLY AT " + watts + "GW" : "UNAVAILABLE, API REQUESTS MIGHT BE SLOW", "</b></em></p>\n        </div>\n    </div>\n    <div class=\"container\">\n        <div class=\"content\" style=\"margin-left:50px;\">\n            <h2 id=\"introduction\">Introduction</h2>\n            <p>SaaS (Simpsons As A Service) provides a modern, RESTful, scalable way of getting Simpsons Character data</p>\n            <h2 id=\"api\">API</h2>\n            <h3 id=\"contentnegotiation\">Content Negotiation</h3>\n            <p>SaaS responds in JSON format</p>\n            <h3 id=\"operations\">Operations</h3>\n            <table class=\"table\" id=\"ops\">\n                <tr>\n                    <th>Path</th>\n                    <th>Description</th>\n                </tr>\n                <tr>\n                    <td>/version</td>\n                    <td>Returns the current SaaS version number.</td>\n                </tr>\n                <tr>\n                    <td>/characters</td>\n                    <td>The main character endpoint</td>\n                </tr>\n                <tr>\n                    <td>/characters/random</td>\n                    <td>Returns a random character</td>\n                </tr>\n                <tr>\n                    <td>/doh</td>\n                    <td>D'oh! As A Service</td>\n                </tr>\n                <tr>\n                    <td>/quotes</td>\n                    <td>Returns a random quote, as well as the name and photo of the quotee</td>\n                </tr>\n                <tr>\n                    <td>/find</td>\n                    <td>Search function. Takes q as input parameter, e.g. /find?q=Bart Simpson</td>\n                </tr>\n                <tr>\n                    <td>/tihi</td>\n                    <td>TIHIaas - Thanks, I hate it as a Service</td>\n                </tr>\n            </table>\n            <p>The <code>/characters/random</code> and <code>/quotes</code> endpoints support the <code>amount</code> switch. E.g. /characters/random?amount=10\n            <h3 id=\"operations\">Example usage</h3>\n            <p><b>cURL</b></p>\n            <code>curl -L \"http://saas.puzzlebart.no/characters?Name=Homer%20Simpson\" -H apikey:\"YOUR_API_KEY\"</code>\n            <br/>\n            <br/>\n            <p><b>fetch</b></p>\n            <code>await fetch(\"http://saas.puzzlebart.no/characters?Name=Homer%20Simpson\",{headers:{apikey:\"YOUR_API_KEY\"}}).then(d=>d.json().then(r=>r))</code>\n            <br/>\n            <br/>\n            <p><b>in-browser</b></p>\n            <code>http://saas.puzzlebart.no/characters?Name=Homer%20Simpson&apikey=EATMYSHORTS</code>\n            <p></p>\n            <p><a href=\"https://github.com/puzzlebart/saas\">Fork us on github!</a></p>\n            <p>Created by <a href=\"https://twitter.com/Kimzter\">@Kimzter</a></p>\n        </div>\n    </div>\n</body>\n</html>\n"));
+  });
 }); // error route
 
 app.get('(/*)?', function (req, res) {
