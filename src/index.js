@@ -113,7 +113,7 @@ let character = app.get(["/characters", "/api/characters", "/chars", "/character
 function ReactorControllerHumidityCheck(req, res) {
     return new Promise((resolve, reject) => {
         if (req.headers.ignore == "true" || req.query.ignore == "true") { resolve(true) } else {
-            axios.get('https://reactorapi.azurewebsites.net/api/CanServerLive?code=R4sueZTK3wX7gY8ol2Urtrjj6jgzZMzVv5gtdOtZKtabZH7urZzhdg==')
+            axios.get('https://reactorapi20190302034437.azurewebsites.net/api/CanServerLive?code=41b/36amxQJFkHR94dhMTyyM7A46vxOgu6Bw4yigAyojYucsH3P4Lw==')
                 .then(response => {
                     console.log(`got reactor core data:`)
                     console.log(JSON.stringify(response.data))
