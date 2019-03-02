@@ -155,7 +155,7 @@ app.get('/', (req, res) => {
             <p>SaaS (Simpsons As A Service) provides a modern, RESTful, scalable way of getting Simpsons Character data</p>
             <h2 id="api">API</h2>
             <h3 id="contentnegotiation">Content Negotiation</h3>
-            <p>SaaS responds in JSON formatted text</p>
+            <p>SaaS responds in JSON format</p>
             <h3 id="operations">Operations</h3>
             <table class="table" id="ops">
                 <tr>
@@ -166,10 +166,13 @@ app.get('/', (req, res) => {
                     <td>/version</td>
                     <td>Returns the current SaaS version number.</td>
                 </tr>
-
                 <tr>
                     <td>/characters</td>
                     <td>The main character endpoint</td>
+                </tr>
+                <tr>
+                    <td>/characters/random</td>
+                    <td>Returns a random character</td>
                 </tr>
                 <tr>
                     <td>/doh</td>
@@ -177,11 +180,11 @@ app.get('/', (req, res) => {
                 </tr>
                 <tr>
                     <td>/quotes</td>
-                    <td>quotes from a character, should they have any</td>
+                    <td>Returns a random quote, as well as the name and photo of the quotee</td>
                 </tr>
                 <tr>
-                    <td>/picture</td>
-                    <td>Returns the main character photo</td>
+                    <td>/find</td>
+                    <td>Search function. Takes q as input parameter, e.g. /find?q=Bart Simpson</td>
                 </tr>
                 <tr>
                     <td>/tihi</td>
@@ -195,6 +198,10 @@ app.get('/', (req, res) => {
             <br/>
             <p><b>fetch</b></p>
             <code>await fetch("http://saas.puzzlebart.no/characters?Name=Homer%20Simpson",{headers:{apikey:"YOUR_API_KEY"}}).then(d=>d.json().then(r=>r))</code>
+            <br/>
+            <br/>
+            <p><b>in-browser</b></p>
+            <code>http://saas.puzzlebart.no/characters?Name=Homer%20Simpson&apikey=EATMYSHORTS"</code>
             <p></p>
             <p><a href="https://github.com/puzzlebart/saas">Fork us on github!</a></p>
             <p>Created by <a href="https://twitter.com/Kimzter">@Kimzter</a></p>
