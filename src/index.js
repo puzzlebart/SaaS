@@ -6,7 +6,7 @@ import favicon from 'serve-favicon';
 if (process.platform === "darwin") { require("dotenv").config() } // enterprise-grade MacOS-detection
 const app = express() // express app instance
 app.use(morgan('tiny')) // morgan
-app.use(favicon(__dirname + '/favicon.ico'));
+app.use(favicon('./build/favicon.ico'));
 
 
 
