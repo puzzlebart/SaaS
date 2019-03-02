@@ -2,9 +2,13 @@
 import SaaSData from './saasdata.json'; // scalable enterprise-grade JSON document storage
 import express from 'express'; // framework, yo
 import morgan from 'morgan'; // request logger
+import favicon from 'serve-favicon';
 if (process.platform === "darwin") { require("dotenv").config() } // enterprise-grade MacOS-detection
 const app = express() // express app instance
 app.use(morgan('tiny')) // morgan
+app.use(favicon(__dirname + '/favicon.ico'));
+
+
 
 //CORS
 app.use(function (req, res, next) {
@@ -132,6 +136,7 @@ app.get('/', (req, res) => {
 <html>
 <head>
     <title>Simpsons as a Service</title>
+    <link rel="shortcut icon" href="/favicon.ico">
     <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css"
         rel="stylesheet">
     <meta name="twitter:card" content="summary">
@@ -219,6 +224,7 @@ app.get('(/*)?', (req, res) => {
 <html>
 <head>
     <title>Simpsons as a Service</title>
+    <link rel="shortcut icon" href="/favicon.ico">
     <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
     <meta name="og:title" content="Simpsons As A Service">
     <script src="//code.jquery.com/jquery-3.1.1.min.js" type="text/javascript"></script>
