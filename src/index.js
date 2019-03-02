@@ -8,6 +8,8 @@ const app = express() // express app instance
 app.use(morgan('tiny')) // morgan
 
 
+const REQUIRED_REACTOR_POWER_IN_GIGAWATTS = 30000
+const REACTOR_TOO_MUCH_POWER = 50000
 
 
 //CORS
@@ -116,10 +118,10 @@ function ReactorControllerHumidityCheck(req, res) {
                     console.log(`got reactor core data:`)
                     console.log(JSON.stringify(response.data))
                     let watts = Math.round(response.data.watt)
-                    if (watts < 28880 && watts !== 0) {
+                    if (watts < REQUIRED_REACTOR_POWER_IN_GIGAWATTS && watts !== 0) {
                         console.log(`---------- WARNING ------------- REACTOR POWER LESS THAN 30GW, currently at ${watts}GW`)
                         resolve([true, watts]) // CHANGE TO FALSE
-                    } else if (watts > 28880) {
+                    } else if (watts > REQUIRED_REACTOR_POWER_IN_GIGAWATTS) {
                         console.log(`--------ALL GOOD, REACTOR POWER AT ${watts}GW`)
                         resolve([true, watts])
                     } else {
@@ -175,7 +177,7 @@ app.get('/', (req, res) => {
         <div class="hero-unit">
             <h1>SaaS</h1>
             <h2>Simpsons As A Service</h2>
-            <p><em>v1.0.0 - REACTORY POWER <b>${watts !== 0 ? watts<28880 ? "TOO LOW, SHOULD BE >28GW, CURRENTLY AT "+watts+"GW. API REQUESTS MIGHT BE SLOW" : "PRETTY GOOD, CURRENTLY AT "+watts+"GW" : "UNAVAILABLE, API REQUESTS MIGHT BE SLOW"}</b></em></p>
+            <p><em>v1.0.0 - REACTORY POWER <b>${watts !== 0 ? watts<REQUIRED_REACTOR_POWER_IN_GIGAWATTS ? "TOO LOW, SHOULD BE >28GW, CURRENTLY AT "+watts+"GW. API REQUESTS MIGHT BE SLOW" : "PRETTY GOOD, CURRENTLY AT "+watts+"GW" : "UNAVAILABLE, API REQUESTS MIGHT BE SLOW"}</b></em></p>
         </div>
     </div>
     <div class="container">
