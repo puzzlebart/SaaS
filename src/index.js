@@ -201,7 +201,7 @@ app.get('/', (req, res) => {
             <br/>
             <br/>
             <p><b>in-browser</b></p>
-            <code>http://saas.puzzlebart.no/characters?Name=Homer%20Simpson&apikey=EATMYSHORTS"</code>
+            <code>http://saas.puzzlebart.no/characters?Name=Homer%20Simpson&apikey=EATMYSHORTS</code>
             <p></p>
             <p><a href="https://github.com/puzzlebart/saas">Fork us on github!</a></p>
             <p>Created by <a href="https://twitter.com/Kimzter">@Kimzter</a></p>
