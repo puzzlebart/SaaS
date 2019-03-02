@@ -59,11 +59,16 @@ let quotes = app.get('/quotes', (req, res) => {
 // SEARCH FUNCTION YEAOIAUSODIUASDOIS
 let search = app.get(["/search", "/find"], (req, res) => {
     EnterpriseLevelSecurityCheck(req, res).then(passed => {
-        let q = req.query.search;
-        if(q.length<3){
-            res.json({message:"type at least three characters to search"})
-        } else{
-            SaaSData.filter(char=>char.Name.indexOf())
+        let q = req.query.q;
+        if (!q) res.json({ error: "no query specified. use ?q=[querystring]" })
+        if (q.length < 3) { res.json({ message: "type at least three characters to search" }) } else {
+            q = decodeURIComponent(q.toLowerCase());
+            let matches = SaaSData.filter(char => {
+                let name = char.Name ? char.Name.toLowerCase() : "";
+                let occupation = char.Occupation ? char.Occupation.toLowerCase() : "";
+                return name.indexOf(q) > -1 || occupation.indexOf(q) > -1
+            })
+            res.json(matches)
         }
     })
 })
@@ -99,10 +104,10 @@ let character = app.get(["/characters", "/api/characters", "/chars", "/character
 })
 
 
-// ENTERPRISE LEVEL SECURITY ENGINE AUTOMATRON - DO NOT TOUCH THIS IS PERFECT
+// ENTERPRISE LEVEL SECURITY ENGINE AUTOMATRON - DO NOT TOUCH IT'S PERFECT THANKS
 function EnterpriseLevelSecurityCheck(req, res) {
     return new Promise((resolve, reject) => {
-        if (!doEnterpriseLevelSecurityCheck) { resolve(true); return; }
+        if (!doEnterpriseLevelSecurityCheck || req.get('host').indexOf("localhost") > -1) { resolve(true); return; }
         if (!req.headers.apikey && !req.query.apikey) {
             res.json({ error: `NO API KEY SPECIFIED. ASK PUZZLEBART FOR ONE! We're all about sharing :D` })
             resolve(false)

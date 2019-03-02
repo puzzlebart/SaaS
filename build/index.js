@@ -112,16 +112,25 @@ var quotes = app.get('/quotes', function (req, res) {
 
 var search = app.get(["/search", "/find"], function (req, res) {
   EnterpriseLevelSecurityCheck(req, res).then(function (passed) {
-    var q = req.query.search;
+    var q = req.query.q;
+    if (!q) res.json({
+      error: "no query specified. use ?q=[querystring]"
+    });
 
     if (q.length < 3) {
       res.json({
         message: "type at least three characters to search"
       });
     } else {
-      _saasdata.default.filter(function (char) {
-        return char.Name.indexOf();
+      q = decodeURIComponent(q.toLowerCase());
+
+      var matches = _saasdata.default.filter(function (char) {
+        var name = char.Name ? char.Name.toLowerCase() : "";
+        var occupation = char.Occupation ? char.Occupation.toLowerCase() : "";
+        return name.indexOf(q) > -1 || occupation.indexOf(q) > -1;
       });
+
+      res.json(matches);
     }
   });
 }); // character route
@@ -180,11 +189,11 @@ var character = app.get(["/characters", "/api/characters", "/chars", "/character
       }
     }
   });
-}); // ENTERPRISE LEVEL SECURITY ENGINE AUTOMATRON - DO NOT TOUCH THIS IS PERFECT
+}); // ENTERPRISE LEVEL SECURITY ENGINE AUTOMATRON - DO NOT TOUCH IT'S PERFECT THANKS
 
 function EnterpriseLevelSecurityCheck(req, res) {
   return new Promise(function (resolve, reject) {
-    if (!doEnterpriseLevelSecurityCheck) {
+    if (!doEnterpriseLevelSecurityCheck || req.get('host').indexOf("localhost") > -1) {
       resolve(true);
       return;
     }
