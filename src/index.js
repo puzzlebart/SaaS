@@ -177,7 +177,7 @@ app.get('/', (req, res) => {
         <div class="hero-unit">
             <h1>SaaS</h1>
             <h2>Simpsons As A Service</h2>
-            <p><em>v1.0.0 - <br/>REACTORY POWER <b>${watts !== 0 ? watts<REQUIRED_REACTOR_POWER_IN_GIGAWATTS ? "TOO LOW, SHOULD BE >28 GIGAWATTS, CURRENTLY AT "+watts+"KILOWATT.<br/>API REQUESTS MIGHT BE SLOW" : "PRETTY GOOD, CURRENTLY AT "+watts+"KW" : "UNAVAILABLE, API REQUESTS MIGHT BE SLOW"}</b></em></p>
+            <p><em>v1.0.0 - <br/><b>REACTORY POWER ${watts !== 0 ? watts<REQUIRED_REACTOR_POWER_IN_GIGAWATTS ? "TOO LOW, SHOULD BE >30000KW, CURRENTLY AT "+watts+"KW.<br/>API REQUESTS MIGHT BE SLOW" : "PRETTY GOOD, CURRENTLY AT "+watts+"KW" : "UNAVAILABLE, API REQUESTS MIGHT BE SLOW"}</b></em></p>
         </div>
     </div>
     <div class="container">
