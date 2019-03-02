@@ -1,9 +1,9 @@
 // @ts-ignore
-import SaaSData from './saasdata.json';
-import express from 'express'; // framework
+import SaaSData from './saasdata.json'; // scalable enterprise-grade JSON document storage
+import express from 'express'; // framework, yo
 import morgan from 'morgan'; // request logger
 if (process.platform === "darwin") { require("dotenv").config() } // enterprise-grade MacOS-detection
-const app = express() // express app
+const app = express() // express app instance
 app.use(morgan('tiny')) // morgan
 
 //CORS
@@ -26,7 +26,7 @@ let tihi = app.get('/tihi', (req, res) => { res.redirect("https://www.youtube.co
 // version
 let version = app.get("/version", (req, res) => { res.json({ version: "1.0.0" }) })
 
-// DaaS
+// DaaS - D´oh! as a Service
 let doh = app.get('/doh', (req, res) => { res.json({ message: "D'oh!" }) }) // D'oh!
 
 let quotes = app.get('/quotes', (req, res) => {
@@ -211,8 +211,9 @@ app.get('/', (req, res) => {
 </body>
 </html>
 `)
-}); // default route
+}); 
 
+// error route
 app.get('(/*)?', (req, res) => {
     res.send(`
 <html>
