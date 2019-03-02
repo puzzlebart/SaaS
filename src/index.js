@@ -30,37 +30,61 @@ let version = app.get("/version", (req, res) => { res.json({ version: "1.0.0" })
 let doh = app.get('/doh', (req, res) => { res.json({ message: "D'oh!" }) }) // D'oh!
 
 let quotes = app.get('/quotes', (req, res) => {
-    let charsWithQuotes = SaaSData.filter(char => char.Quotes.length >= 1)
-    const getRandomChar = () => charsWithQuotes[randomize(0, charsWithQuotes.length - 1)]
-    // THIS RETURNS NULL SOMETIMES WAAAAAAAAAAI
-    const getRandomQuote = (char) => char.Quotes.length === 1 ? char.Quotes[0] : char.Quotes[randomize(0, char.Quotes.length - 1)];
-    const getRandomQuoteObject = () => {
-        let rChar = getRandomChar()
-        let rQuote = getRandomQuote(rChar)
-        return { Quote: rQuote, Name: rChar.Name, Picture: rChar.Picture }
-    }
-    if (!req.query.amount) {
-        console.log("getting random quote")
-        // sensible - random by default
-        // God this is so horrible
-        res.json(getRandomQuoteObject())
-    } if (req.query.amount) {
-        if (isNaN(parseInt(req.query.amount))) { res.json({ error: "YOU HAVE TO SPECIFY A NUMBER AS AMOUNT, DOOFUS" }) }
-        let chars = []
-        for (let i = 0; i < req.query.amount; i++) { chars.push(getRandomQuoteObject()) }
-        res.json(chars)
-    }
-    else {
-        console.log(req.query)
-    }
+    EnterpriseLevelSecurityCheck(req, res).then(passed => { // VERY IMPORTANT SECURITY STUUFF
+        let charsWithQuotes = SaaSData.filter(char => char.Quotes.length >= 1)
+        const getRandomChar = () => charsWithQuotes[randomize(0, charsWithQuotes.length - 1)]
+        const getRandomQuote = (char) => char.Quotes.length === 1 ? char.Quotes[0] : char.Quotes[randomize(0, char.Quotes.length - 1)];
+        const getRandomQuoteObject = () => {
+            let rChar = getRandomChar()
+            let rQuote = getRandomQuote(rChar)
+            return { Quote: rQuote, Name: rChar.Name, Picture: rChar.Picture }
+        }
+        if (!req.query.amount) {
+            console.log("getting random quote")
+            // sensible - random by default
+            // God this is so horrible
+            res.json(getRandomQuoteObject())
+        } if (req.query.amount) {
+            if (isNaN(parseInt(req.query.amount))) { res.json({ error: "YOU HAVE TO SPECIFY A NUMBER AS AMOUNT, DOOFUS" }) }
+            let chars = []
+            for (let i = 0; i < req.query.amount; i++) { chars.push(getRandomQuoteObject()) }
+            res.json(chars)
+        }
+        else {
+            console.log(req.query)
+        }
+    })
+})
+
+// SEARCH FUNCTION YEAOIAUSODIUASDOIS
+let search = app.get(["/search", "/find"], (req, res) => {
+    EnterpriseLevelSecurityCheck(req, res).then(passed => {
+        let q = req.query.search;
+        if(q.length<3){
+            res.json({message:"type at least three characters to search"})
+        } else{
+            SaaSData.filter(char=>char.Name.indexOf())
+        }
+    })
 })
 
 // character route
-let character = app.get(["/characters", "/api/characters", "/chars"], (req, res) => {
+let character = app.get(["/characters", "/api/characters", "/chars", "/characters/random"], (req, res) => {
     console.log(`APIKEY: ${JSON.stringify(req.headers.apikey) || "none"}`)
     EnterpriseLevelSecurityCheck(req, res).then(passed => {
         if (!passed) return;
         let search = req.query;
+        if (req.url.indexOf("/random") > -1) {
+            const getRandomCharacter = () => SaaSData[randomize(0, SaaSData.length)];
+            //return random character
+            if (req.query.amount) {
+                if (isNaN(parseInt(req.query.amount))) { res.json({ error: "YOU HAVE TO SPECIFY A NUMBER AS AMOUNT, DOOFUS" }) }
+                let randomChars = []
+                for (let i = 0; i < req.query.amount; i++) { randomChars.push(getRandomCharacter()) }
+                res.json(randomChars)
+            }
+            res.json(SaaSData[randomize(0, SaaSData.length)])
+        }
         console.log(`queryprop: ${Object.keys(search)[0]}`)
         if (!Object.keys(search)[0]) { res.send(`<h1>SaaS character-endpoint. Retrieve a character using ?name=[charactername] or ?id=[characterId] </h1>`) } else {
             let queryProp = capitalize(Object.keys(search)[0])
@@ -74,20 +98,24 @@ let character = app.get(["/characters", "/api/characters", "/chars"], (req, res)
     });
 })
 
+
+// ENTERPRISE LEVEL SECURITY ENGINE AUTOMATRON - DO NOT TOUCH THIS IS PERFECT
 function EnterpriseLevelSecurityCheck(req, res) {
     return new Promise((resolve, reject) => {
         if (!doEnterpriseLevelSecurityCheck) { resolve(true); return; }
-        if (!req.headers.apikey) {
+        if (!req.headers.apikey && !req.query.apikey) {
             res.json({ error: `NO API KEY SPECIFIED. ASK PUZZLEBART FOR ONE! We're all about sharing :D` })
             resolve(false)
         } else {
-            if (superSecretApiKeys.includes(req.headers.apikey)) { resolve(true) } else {
-                res.json({ error: `WRONG API KEY SPECIFIED. ARE YOU HACKING???!` })
+            if (superSecretApiKeys.includes(req.headers.apikey) || superSecretApiKeys.includes(req.query.apikey)) { resolve(true) } else {
+                res.json({ error: `WRONG API KEY SPECIFIED - ARE YOU HACKING???!` })
                 resolve(false)
             }
         }
     })
 }
+// END SECURITIFICATION
+
 
 // Stupid sexy jslint
 const capitalize = (s) => { if (typeof s !== 'string') return ''; return s.charAt(0).toUpperCase() + s.slice(1) }

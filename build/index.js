@@ -59,60 +59,104 @@ var doh = app.get('/doh', function (req, res) {
 }); // D'oh!
 
 var quotes = app.get('/quotes', function (req, res) {
-  var charsWithQuotes = _saasdata.default.filter(function (char) {
-    return char.Quotes.length >= 1;
-  });
+  EnterpriseLevelSecurityCheck(req, res).then(function (passed) {
+    // VERY IMPORTANT SECURITY STUUFF
+    var charsWithQuotes = _saasdata.default.filter(function (char) {
+      return char.Quotes.length >= 1;
+    });
 
-  var getRandomChar = function getRandomChar() {
-    return charsWithQuotes[randomize(0, charsWithQuotes.length - 1)];
-  }; // THIS RETURNS NULL SOMETIMES WAAAAAAAAAAI
-
-
-  var getRandomQuote = function getRandomQuote(char) {
-    return char.Quotes.length === 1 ? char.Quotes[0] : char.Quotes[randomize(0, char.Quotes.length - 1)];
-  };
-
-  var getRandomQuoteObject = function getRandomQuoteObject() {
-    var rChar = getRandomChar();
-    var rQuote = getRandomQuote(rChar);
-    return {
-      Quote: rQuote,
-      Name: rChar.Name,
-      Picture: rChar.Picture
+    var getRandomChar = function getRandomChar() {
+      return charsWithQuotes[randomize(0, charsWithQuotes.length - 1)];
     };
-  };
 
-  if (!req.query.amount) {
-    console.log("getting random quote"); // sensible - random by default
-    // God this is so horrible
+    var getRandomQuote = function getRandomQuote(char) {
+      return char.Quotes.length === 1 ? char.Quotes[0] : char.Quotes[randomize(0, char.Quotes.length - 1)];
+    };
 
-    res.json(getRandomQuoteObject());
-  }
+    var getRandomQuoteObject = function getRandomQuoteObject() {
+      var rChar = getRandomChar();
+      var rQuote = getRandomQuote(rChar);
+      return {
+        Quote: rQuote,
+        Name: rChar.Name,
+        Picture: rChar.Picture
+      };
+    };
 
-  if (req.query.amount) {
-    if (isNaN(parseInt(req.query.amount))) {
+    if (!req.query.amount) {
+      console.log("getting random quote"); // sensible - random by default
+      // God this is so horrible
+
+      res.json(getRandomQuoteObject());
+    }
+
+    if (req.query.amount) {
+      if (isNaN(parseInt(req.query.amount))) {
+        res.json({
+          error: "YOU HAVE TO SPECIFY A NUMBER AS AMOUNT, DOOFUS"
+        });
+      }
+
+      var chars = [];
+
+      for (var i = 0; i < req.query.amount; i++) {
+        chars.push(getRandomQuoteObject());
+      }
+
+      res.json(chars);
+    } else {
+      console.log(req.query);
+    }
+  });
+}); // SEARCH FUNCTION YEAOIAUSODIUASDOIS
+
+var search = app.get(["/search", "/find"], function (req, res) {
+  EnterpriseLevelSecurityCheck(req, res).then(function (passed) {
+    var q = req.query.search;
+
+    if (q.length < 3) {
       res.json({
-        error: "YOU HAVE TO SPECIFY A NUMBER AS AMOUNT, DOOFUS"
+        message: "type at least three characters to search"
+      });
+    } else {
+      _saasdata.default.filter(function (char) {
+        return char.Name.indexOf();
       });
     }
-
-    var chars = [];
-
-    for (var i = 0; i < req.query.amount; i++) {
-      chars.push(getRandomQuoteObject());
-    }
-
-    res.json(chars);
-  } else {
-    console.log(req.query);
-  }
+  });
 }); // character route
 
-var character = app.get(["/characters", "/api/characters", "/chars"], function (req, res) {
+var character = app.get(["/characters", "/api/characters", "/chars", "/characters/random"], function (req, res) {
   console.log("APIKEY: ".concat(JSON.stringify(req.headers.apikey) || "none"));
   EnterpriseLevelSecurityCheck(req, res).then(function (passed) {
     if (!passed) return;
     var search = req.query;
+
+    if (req.url.indexOf("/random") > -1) {
+      var getRandomCharacter = function getRandomCharacter() {
+        return _saasdata.default[randomize(0, _saasdata.default.length)];
+      }; //return random character
+
+
+      if (req.query.amount) {
+        if (isNaN(parseInt(req.query.amount))) {
+          res.json({
+            error: "YOU HAVE TO SPECIFY A NUMBER AS AMOUNT, DOOFUS"
+          });
+        }
+
+        var randomChars = [];
+
+        for (var i = 0; i < req.query.amount; i++) {
+          randomChars.push(getRandomCharacter());
+        }
+
+        res.json(randomChars);
+      }
+
+      res.json(_saasdata.default[randomize(0, _saasdata.default.length)]);
+    }
+
     console.log("queryprop: ".concat(Object.keys(search)[0]));
 
     if (!Object.keys(search)[0]) {
@@ -136,7 +180,7 @@ var character = app.get(["/characters", "/api/characters", "/chars"], function (
       }
     }
   });
-});
+}); // ENTERPRISE LEVEL SECURITY ENGINE AUTOMATRON - DO NOT TOUCH THIS IS PERFECT
 
 function EnterpriseLevelSecurityCheck(req, res) {
   return new Promise(function (resolve, reject) {
@@ -145,23 +189,24 @@ function EnterpriseLevelSecurityCheck(req, res) {
       return;
     }
 
-    if (!req.headers.apikey) {
+    if (!req.headers.apikey && !req.query.apikey) {
       res.json({
         error: "NO API KEY SPECIFIED. ASK PUZZLEBART FOR ONE! We're all about sharing :D"
       });
       resolve(false);
     } else {
-      if (superSecretApiKeys.includes(req.headers.apikey)) {
+      if (superSecretApiKeys.includes(req.headers.apikey) || superSecretApiKeys.includes(req.query.apikey)) {
         resolve(true);
       } else {
         res.json({
-          error: "WRONG API KEY SPECIFIED. ARE YOU HACKING???!"
+          error: "WRONG API KEY SPECIFIED - ARE YOU HACKING???!"
         });
         resolve(false);
       }
     }
   });
-} // Stupid sexy jslint
+} // END SECURITIFICATION
+// Stupid sexy jslint
 
 
 var capitalize = function capitalize(s) {
