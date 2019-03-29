@@ -9,7 +9,7 @@ app.use(morgan('tiny')) // morgan
 
 
 const REQUIRED_REACTOR_POWER_IN_GIGAWATTS = 30000
-const REACTOR_TOO_MUCH_POWER = 50000
+const REACTOR_TOO_MUCH_POWER = 80000
 
 
 //CORS

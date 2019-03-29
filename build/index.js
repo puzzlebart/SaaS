@@ -36,7 +36,7 @@ var app = (0, _express.default)(); // express app instance
 app.use((0, _morgan.default)('tiny')); // morgan
 
 var REQUIRED_REACTOR_POWER_IN_GIGAWATTS = 30000;
-var REACTOR_TOO_MUCH_POWER = 50000; //CORS
+var REACTOR_TOO_MUCH_POWER = 80000; //CORS
 
 app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*"); // Remember to have apikey here, else our enterprise-grade authorization-system will fail
