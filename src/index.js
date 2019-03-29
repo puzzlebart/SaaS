@@ -1,5 +1,5 @@
 // @ts-ignore
-import SaaSData from './saasdata.json'; // scalable enterprise-grade JSON document storage
+import SaaSData from '../src/saasdata.json'; // scalable enterprise-grade JSON document storage
 import express from 'express'; // framework, yo
 import morgan from 'morgan'; // request logger
 import axios from "axios";
