@@ -12,8 +12,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
 
-function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
-
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); 
 function _iterableToArrayLimit(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
 
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
@@ -204,26 +203,24 @@ var character = app.get(["/characters", "/api/characters", "/chars", "/character
 
 function ReactorControllerHumidityCheck(req, res) {
   return new Promise(function (resolve, reject) {
-    if (req.headers.ignore == "true" || req.query.ignore == "true") {
-      resolve(true);
-    } else {
-      _axios.default.get('https://reactorapi20190302034437.azurewebsites.net/api/CanServerLive?code=41b/36amxQJFkHR94dhMTyyM7A46vxOgu6Bw4yigAyojYucsH3P4Lw==').then(function (response) {
-        console.log("got reactor core data:");
-        console.log(JSON.stringify(response.data));
-        var watts = Math.round(response.data.watt);
-
-        if (watts < REQUIRED_REACTOR_POWER_IN_GIGAWATTS && watts !== 0) {
-          console.log("---------- WARNING ------------- REACTOR POWER LESS THAN 30GW, currently at ".concat(watts, "GW"));
-          resolve([true, watts]); // CHANGE TO FALSE
-        } else if (watts > REQUIRED_REACTOR_POWER_IN_GIGAWATTS) {
-          console.log("--------ALL GOOD, REACTOR POWER AT ".concat(watts, "GW"));
-          resolve([true, watts]);
-        } else {
-          console.log("--------REACTOR POWER DETECTOR CURRENTLY UNAVAILABLE--------");
-          resolve([true, watts]); // fuck this guy
-        }
-      });
-    }
+    resolve([true, "63220"]); // if (req.headers.ignore == "true" || req.query.ignore == "true") { resolve(true) } else {
+    //     axios.get('https://reactorapi20190302034437.azurewebsites.net/api/CanServerLive?code=41b/36amxQJFkHR94dhMTyyM7A46vxOgu6Bw4yigAyojYucsH3P4Lw==')
+    //         .then(response => {
+    //             console.log(`got reactor core data:`)
+    //             console.log(JSON.stringify(response.data))
+    //             let watts = Math.round(response.data.watt)
+    //             if (watts < REQUIRED_REACTOR_POWER_IN_GIGAWATTS && watts !== 0) {
+    //                 console.log(`---------- WARNING ------------- REACTOR POWER LESS THAN 30GW, currently at ${watts}GW`)
+    //                 resolve([true, watts]) // CHANGE TO FALSE
+    //             } else if (watts > REQUIRED_REACTOR_POWER_IN_GIGAWATTS) {
+    //                 console.log(`--------ALL GOOD, REACTOR POWER AT ${watts}GW`)
+    //                 resolve([true, watts])
+    //             } else {
+    //                 console.log(`--------REACTOR POWER DETECTOR CURRENTLY UNAVAILABLE--------`)
+    //                 resolve([true, watts]) // fuck this guy
+    //             }
+    //         })
+    // }
   });
 } // ENTERPRISE LEVEL SECURITY ENGINE AUTOMATRON - DO NOT TOUCH IT'S PERFECT THANKS
 
