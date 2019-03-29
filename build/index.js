@@ -1,6 +1,6 @@
 "use strict";
 
-var _saasdata = _interopRequireDefault(require("./saasdata.json"));
+var _saasdata = _interopRequireDefault(require("saasdata.json"));
 
 var _express = _interopRequireDefault(require("express"));
 
